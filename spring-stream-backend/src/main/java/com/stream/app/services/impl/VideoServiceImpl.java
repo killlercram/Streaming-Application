@@ -25,6 +25,9 @@ public class VideoServiceImpl implements VideoService {
     @Value("${files.video}")
     String DIR;
 
+    @Value("${files.video.hsl}")
+    String HSL_DIR;
+
 
     private VideoRepository videoRepository;
 
@@ -37,6 +40,11 @@ public class VideoServiceImpl implements VideoService {
     @PostConstruct
     public void init(){
         File file=new File(DIR);
+        try {
+            Files.createDirectories(Paths.get(HSL_DIR));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if(!file.exists()){
             file.mkdir();
             System.out.println("folder Created");
@@ -99,5 +107,37 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public List<Video> getAll() {
         return videoRepository.findAll();
+    }
+
+    @Override
+    public String processVideo(String videoId,MultipartFile file) {
+        Video video = this.get(videoId);
+        String filePath=video.getFilePath();
+
+        //Path Where to store data;
+        Path videoPath=Paths.get(filePath);
+        try {
+        //ffmpeg Command
+            Path outputPath=Paths.get(HSL_DIR,videoId);
+            Files.createDirectories(outputPath);
+            String ffmpegCmd = String.format(
+                    "ffmpeg -i \"%s\" -c:v libx264 -c:a aac -strict -2 -f hls -hls_time 10 -hls_list_size 0 -hls_segment_filename \"%s/segment_%%3d.ts\" \"%s/index.master.m3u8\"",
+                    videoPath, outputPath, outputPath
+            );
+            System.out.println(ffmpegCmd);
+            //file this command
+            ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", "-c", ffmpegCmd);
+            processBuilder.inheritIO();
+            Process process = processBuilder.start();
+            int exit = process.waitFor();
+            if (exit != 0) {
+                throw new RuntimeException("video processing failed!!");
+            }
+            return videoId;
+        } catch (IOException ex) {
+            throw new RuntimeException("Video processing fail!!");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
