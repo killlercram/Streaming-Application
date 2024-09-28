@@ -13,7 +13,7 @@ class SpringStreamBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
-		videoService.processVideo("1ea3d85f-6246-4ba3-88ce-ca9c5d27b596",null);
+		videoService.processVideo("1ea3d85f-6246-4ba3-88ce-ca9c5d27b596");
 	}
 
 }

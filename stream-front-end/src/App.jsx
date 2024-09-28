@@ -1,9 +1,11 @@
 
 import './App.css'
 import VideoUpload from './components/VideoUpload'
+import {useState} from 'react';
 
 function App() {
- 
+  // eslint-disable-next-line no-unused-vars
+  const [videoId,setVideoId]=useState('2de6a435-9e0a-4e19-a28a-8755f539da46');
 
   return (
    <>
@@ -14,30 +16,14 @@ function App() {
       <h1 className='text-white'>
         Playing Video
       </h1>
-      {/* <video
-    id="my-video"
-    className="video-js"
-    controls
-    preload="auto"
-    width="640"
-    height="264"
-    data-setup="{}"
-  >
-    <source src={`http://localhost:8080/api/v1/videos/stream/range/${"2de6a435-9e0a-4e19-a28a-8755f539da46"}`}  type="video/mp4" />
-    <p className="vjs-no-js">
-      To view this video please enable JavaScript, and consider upgrading to a
-      web browser that
-      <a href="https://videojs.com/html5-video-support/" target="_blank"
-        >supports HTML5 video</a
-      >
-    </p>
-  </video> */}
       <video
       style={{
-        width:300,
-        height:250,
+        width:"100%",
       }}
-       src={`http://localhost:8080/api/v1/videos/stream/range/${"2de6a435-9e0a-4e19-a28a-8755f539da46"}`} controls></video>
+      //  src={`http://localhost:8080/api/v1/videos/stream/range/${videoId}`} controls>
+       src="http://localhost:8080/api/v1/videos/ecf154e5-9c45-42b2-b1a1-df9a25398dde/index.master.m3u8" controls >
+
+       </video>
     </div>
 
     <VideoUpload/>

@@ -87,9 +87,17 @@ public class VideoServiceImpl implements VideoService {
             video.setContentType(contentType);
             video.setFilePath(path.toString());
 
+            Video SavedVideo=videoRepository.save(video);
+
+            //Processing Video
+            processVideo(SavedVideo.getVideoId());
+
+            //Delete Actual video file if
 
             //metadata save
-            return videoRepository.save(video);
+            return SavedVideo;
+
+
 
         }catch (IOException e){
             e.printStackTrace();
@@ -110,7 +118,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public String processVideo(String videoId,MultipartFile file) {
+    public String processVideo(String videoId) {
         Video video = this.get(videoId);
         String filePath=video.getFilePath();
 
@@ -134,6 +142,7 @@ public class VideoServiceImpl implements VideoService {
                 throw new RuntimeException("video processing failed!!");
             }
             return videoId;
+
         } catch (IOException ex) {
             throw new RuntimeException("Video processing fail!!");
         } catch (InterruptedException e) {
