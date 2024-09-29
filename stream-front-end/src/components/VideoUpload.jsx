@@ -87,7 +87,7 @@ function VideoUpload() {
         }
       );
       // console.log(response);
-      setMessage("File Uploaded");
+      setMessage("File Uploaded " + response.data.videoId);
       setProgress(0);
       resetForm();
     } catch (error) {
